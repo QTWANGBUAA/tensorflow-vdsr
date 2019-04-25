@@ -1,7 +1,7 @@
 import tensorflow as tf
 from PIL import Image #或直接import Image
 import numpy as np
-image_raw_data_jpg = tf.gfile.FastGFile('/media/king/AC88794B887914D4/PycharmProjects/UPSAMPLE/result/res3.jpg', 'rb').read()
+# image_raw_data_jpg = tf.gfile.FastGFile('/media/king/AC88794B887914D4/PycharmProjects/UPSAMPLE/result/res3.jpg', 'rb').read()
 
 
 def filter(src_img):
@@ -15,17 +15,5 @@ def filter(src_img):
     return var
 
 
-#
-# with tf.Session() as sess:
-#     sess.run(tf.global_variables_initializer())
-#
-#     img_data_jpg = tf.image.decode_jpeg(image_raw_data_jpg) #图像解码
-#     img_data_jpg = tf.image.convert_image_dtype(img_data_jpg, dtype=tf.float32) #改变图像数据的类型
-#     img_data_jpg = tf.reshape(img_data_jpg, [1, 616, 816, 1])
-#     var_res = filter(img_data_jpg)
-#     var_ = var_res.eval()
-#     var_ = var_*255
-#     var_res = var_.astype(np.uint8)
-#     res = Image.fromarray(var_res)
-#     res.save("./res.jpg")
-
+if __name__ == '__main__':
+    print("hello world")
