@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-
+import Weight_filter
 def model(input_tensor):
 	with tf.device("/gpu:0"):
 		weights = []
@@ -29,4 +29,9 @@ def model(input_tensor):
 		tensor = tf.nn.bias_add(tf.nn.conv2d(tensor, conv_w, strides=[1,1,1,1], padding='SAME'), conv_b)
 
 		tensor = tf.add(tensor, input_tensor)
-		return tensor, weights
+		# this is the output of the VDSR.modle, now we add a sigma regulation to the loss function
+		# at the same time, we need give the truth to the weight_filter()
+		pre_edge = filter(tensor)
+		gt_edge = filter(input_tensor)
+
+		return tensor, weights, pre_edge, gt_edge
