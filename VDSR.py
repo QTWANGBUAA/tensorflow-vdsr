@@ -50,7 +50,7 @@ def get_image_batch(train_list, offset, batch_size):
     gt_list = []
     cbcr_list = []
     for pair in target_list:
-        input_img = scipy.io.loadmat.File(pair[1])['patch']
+        input_img = h5py.File(pair[1])['patch']
         gt_img = h5py.File(pair[0])['patch']
         input_list.append(input_img)
         gt_list.append(gt_img)
@@ -115,10 +115,11 @@ if __name__ == '__main__':
     train_output, weights = shared_model(train_input)
     # this is the output of the VDSR.modle, now we add a sigma regulation to the loss function
     # at the same time, we need give the truth to the weight_filter()
-    pre_edge = filter(train_output)
-    gt_edge = filter(train_gt)
-    loss = tf.reduce_sum(tf.nn.l2_loss(tf.subtract(train_output, train_gt))) + tf.reduce_sum(
-        tf.nn.l2_loss(tf.subtract(pre_edge, gt_edge)))
+    # pre_edge = Weight_filter.filter(train_output)
+    # gt_edge = Weight_filter.filter(train_gt)
+    loss = tf.reduce_sum(tf.nn.l2_loss(tf.subtract(train_output, train_gt)))
+        #    + tf.reduce_sum(
+        # tf.nn.l2_loss(tf.subtract(pre_edge, gt_edge)))
     for w in weights:
         loss += tf.nn.l2_loss(w) * 1e-4
     tf.summary.scalar("loss", loss)
@@ -143,7 +144,7 @@ if __name__ == '__main__':
         merged = tf.summary.merge_all()
         file_writer = tf.summary.FileWriter('logs', sess.graph)
 
-        tf.global_variables_initializer()
+        tf.global_variables_initializer().run()
 
         if model_path:
             print("restore model...")
@@ -153,11 +154,11 @@ if __name__ == '__main__':
 
         ### WITH ASYNCHRONOUS DATA LOADING ###
         def load_and_enqueue(coord, file_list, enqueue_op, train_input_single, train_gt_single, idx=0, num_thread=1):
-            count = 0;
+            count = 0
             length = len(file_list)
             try:
                 while not coord.should_stop():
-                    i = count % length;
+                    i = count % length
                     input_img = scipy.io.loadmat(file_list[i][1])['patch'].reshape([IMG_SIZE[0], IMG_SIZE[1], 1])
                     gt_img = scipy.io.loadmat(file_list[i][0])['patch'].reshape([IMG_SIZE[0], IMG_SIZE[1], 1])
                     sess.run(enqueue_op, feed_dict={train_input_single: input_img, train_gt_single: gt_img})

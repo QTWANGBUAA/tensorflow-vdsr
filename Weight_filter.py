@@ -11,7 +11,7 @@ def filter(src_img):
     src_img_sauqre = tf.square(src_img)
     square_mean = tf.nn.depthwise_conv2d(src_img_sauqre, filter, strides=[1, 1, 1, 1], rate=[1, 1], padding='SAME')
     var = tf.abs(square_mean - mean_square)
-    var = tf.reshape(var, [3, 616, 816])
+    var = tf.reshape(var, [64, 41, 41])
     return var
 
 

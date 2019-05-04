@@ -37,4 +37,4 @@ def model(input_tensor):
 
         tensor = tf.add(tensor, input_tensor)
 
-        return tensor, weights, pre_edge, gt_edge
+        return tensor, weights
