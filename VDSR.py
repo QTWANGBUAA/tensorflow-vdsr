@@ -115,11 +115,9 @@ if __name__ == '__main__':
     train_output, weights = shared_model(train_input)
     # this is the output of the VDSR.modle, now we add a sigma regulation to the loss function
     # at the same time, we need give the truth to the weight_filter()
-    # pre_edge = Weight_filter.filter(train_output)
-    # gt_edge = Weight_filter.filter(train_gt)
-    loss = tf.reduce_sum(tf.nn.l2_loss(tf.subtract(train_output, train_gt)))
-        #    + tf.reduce_sum(
-        # tf.nn.l2_loss(tf.subtract(pre_edge, gt_edge)))
+    pre_edge = Weight_filter.filter(train_output)
+    gt_edge = Weight_filter.filter(train_gt)
+    loss = tf.reduce_sum(tf.nn.l2_loss(tf.subtract(train_output, train_gt))) + tf.reduce_sum(tf.nn.l2_loss(tf.subtract(pre_edge, gt_edge)))
     for w in weights:
         loss += tf.nn.l2_loss(w) * 1e-4
     tf.summary.scalar("loss", loss)
